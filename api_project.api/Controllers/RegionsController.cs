@@ -1,4 +1,6 @@
-﻿using api_project.api.Model.Domain;
+﻿using api_project.api.Data;
+using api_project.api.Model.Domain;
+using api_project.api.Model.DTO;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,35 +10,44 @@ namespace api_project.api.Controllers
     [ApiController]
     public class RegionsController : ControllerBase
     {
+        private readonly ApiProjectDBContext dbContext;
+        public RegionsController(ApiProjectDBContext dbContext)
+        {
+            this.dbContext = dbContext;
+        }
         [HttpGet]
         public IActionResult GetRegions()
         {
-            // This is a placeholder for the actual implementation.
-            // You would typically fetch regions from a database or another service.
-            var regions = new List<Regions>
-            {
-              new Regions
-              {
-                Id = Guid.NewGuid(),
-                Name = "Karachi",
-                Code = "Khi",
-                RegionImageUrl = "https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              },
-              new Regions {
-                Id = Guid.NewGuid(),
-                Name = "Lahore",
-                Code = "lah",
-                RegionImageUrl = "https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              },
-              new Regions {
-                Id = Guid.NewGuid(),
-                Name = "Peshawar",
-                Code = "PSH",
-                RegionImageUrl = "https://images.unsplash.com/photo-1493612276216-ee3925520721?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-              }
-            };
+            var regions =  dbContext.Regions.ToList();
 
-            return Ok(regions);
+            var regionsDto = regions.Select(x => new RegionDto
+            {
+                Id = x.Id,
+                Code = x.Code,
+                Name = x.Name,
+                RegionImageUrl = x.RegionImageUrl
+            }).ToList();
+
+            return Ok(regionsDto);
+        }
+        /* Get Regions By ID */
+        [HttpGet]
+        [Route("{id:guid}")]
+        public IActionResult GetRegionsID(Guid id) { 
+            var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomain == null)
+            {
+                return NotFound();
+            }
+
+            var regionDto = new RegionDto
+            {
+                Id = regionDomain.Id,
+                Code = regionDomain.Code,
+                Name = regionDomain.Name,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+            return Ok(regionDto);
         }
     }
 }
