@@ -18,7 +18,7 @@ namespace api_project.api.Controllers
         [HttpGet]
         public IActionResult GetRegions()
         {
-            var regions =  dbContext.Regions.ToList();
+            var regions = dbContext.Regions.ToList();
 
             var regionsDto = regions.Select(x => new RegionDto
             {
@@ -33,7 +33,8 @@ namespace api_project.api.Controllers
         /* Get Regions By ID */
         [HttpGet]
         [Route("{id:guid}")]
-        public IActionResult GetRegionsID(Guid id) { 
+        public IActionResult GetRegionsID(Guid id)
+        {
             var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id);
             if (regionDomain == null)
             {
@@ -49,5 +50,82 @@ namespace api_project.api.Controllers
             };
             return Ok(regionDto);
         }
+
+        [HttpPost]
+        public IActionResult AddRegion([FromBody] AddRegionRequestDto AddRegion)
+        {
+            if (AddRegion == null)
+            {
+                return BadRequest();
+            }
+            var regionDomain = new Regions
+            {
+                Id = Guid.NewGuid(),
+                Code = AddRegion.Code,
+                Name = AddRegion.Name,
+                RegionImageUrl = AddRegion.RegionImageUrl
+            };
+            dbContext.Regions.Add(regionDomain);
+            dbContext.SaveChanges();
+
+            var RegionDto = new RegionDto
+            {
+                Id = regionDomain.Id,
+                Code = regionDomain.Code,
+                Name = regionDomain.Name,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+
+            return CreatedAtAction(nameof(GetRegionsID), new { id = RegionDto.Id }, RegionDto);
+        }
+
+        [HttpPut]
+        [Route("{id:guid}")]
+
+        public IActionResult Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegion)
+        {
+            if (updateRegion == null)
+            {
+                return BadRequest();
+            }
+            var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomain == null)
+            {
+                return NotFound();
+            }
+            regionDomain.Code = updateRegion.Code;
+            regionDomain.Name = updateRegion.Name;
+            regionDomain.RegionImageUrl = updateRegion.RegionImageUrl;
+            dbContext.SaveChanges();
+            var regionDto = new RegionDto
+            {
+                Id = regionDomain.Id,
+                Code = regionDomain.Code,
+                Name = regionDomain.Name,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+            return Ok(regionDto);
+        }
+
+        [HttpDelete]
+        [Route("{id:guid}")]
+        public IActionResult Delete([FromRoute] Guid id)
+        {
+            var regionDomain = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            if (regionDomain == null)
+            {
+                return NotFound();
+            }
+            dbContext.Regions.Remove(regionDomain);
+            dbContext.SaveChanges();
+            var regionDto = new RegionDto
+            {
+                Id = regionDomain.Id,
+                Code = regionDomain.Code,
+                Name = regionDomain.Name,
+                RegionImageUrl = regionDomain.RegionImageUrl
+            };
+            return Ok(regionDto);
+        } 
     }
 }
