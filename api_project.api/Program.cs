@@ -1,4 +1,5 @@
 using api_project.api.Data;
+using api_project.api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +10,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Register the DbContext with SQL Server provider
 builder.Services.AddDbContext<ApiProjectDBContext>(options =>
    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register the repository interface and its implementation
+builder.Services.AddScoped<IRegionRepositories, SQLRegionRepository>();
 
 var app = builder.Build();
 
