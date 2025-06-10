@@ -1,4 +1,5 @@
 using api_project.api.Data;
+using api_project.api.Mappings;
 using api_project.api.Repositories;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,6 +18,9 @@ builder.Services.AddDbContext<ApiProjectDBContext>(options =>
 
 // Register the repository interface and its implementation
 builder.Services.AddScoped<IRegionRepositories, SQLRegionRepository>();
+
+// Register AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperClass));
 
 var app = builder.Build();
 
