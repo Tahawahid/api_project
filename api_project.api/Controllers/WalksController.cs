@@ -1,4 +1,5 @@
-﻿using api_project.api.Model.Domain;
+﻿using api_project.api.CustomActionFilter;
+using api_project.api.Model.Domain;
 using api_project.api.Model.DTO;
 using api_project.api.Repositories;
 using AutoMapper;
@@ -21,13 +22,9 @@ namespace api_project.api.Controllers
         }
         // POST: api/walks
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> CreateAsync([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
-            // Validate the incoming request
-            if (addWalksRequestDto == null || !ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var walk = mapper.Map<Walk>(addWalksRequestDto);
 
             await walkRepository.CreateAsync(walk);
@@ -62,13 +59,10 @@ namespace api_project.api.Controllers
         // PUT: api/walks/{id}
         [HttpPut]
         [Route("{id:guid}")]
+        [ValidateModel]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
-            // Validate the incoming request
-            if (updateWalkRequestDto == null || !ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            
             var walk = mapper.Map<Walk>(updateWalkRequestDto);
             walk.Id = id;
             var updatedWalk = await walkRepository.UpdateAsync(walk);

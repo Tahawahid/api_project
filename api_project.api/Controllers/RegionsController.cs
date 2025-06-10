@@ -1,4 +1,5 @@
-﻿using api_project.api.Data;
+﻿using api_project.api.CustomActionFilter;
+using api_project.api.Data;
 using api_project.api.Model.Domain;
 using api_project.api.Model.DTO;
 using api_project.api.Repositories;
@@ -57,13 +58,9 @@ namespace api_project.api.Controllers
 
         /* Add Region */
         [HttpPost]
+        [ValidateModel]
         public async Task<IActionResult> AddRegion([FromBody] AddRegionRequestDto AddRegion)
         {
-            // Validate the incoming request
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             
             // Mapping the AddRegionRequestDto to the Regions domain model
             var regionDomain = mapper.Map<Regions>(AddRegion);
@@ -80,13 +77,11 @@ namespace api_project.api.Controllers
         // Update the Region
         [HttpPut]
         [Route("{id:guid}")]
+        [ValidateModel]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegion)
         {
             // Validate the incoming request
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            
             // Mapping the UpdateRegionRequestDto to the Regions domain model
             var regionDomainModel = mapper.Map<Regions>(updateRegion);
 
