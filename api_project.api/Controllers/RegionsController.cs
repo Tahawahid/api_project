@@ -59,6 +59,12 @@ namespace api_project.api.Controllers
         [HttpPost]
         public async Task<IActionResult> AddRegion([FromBody] AddRegionRequestDto AddRegion)
         {
+            // Validate the incoming request
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            
             // Mapping the AddRegionRequestDto to the Regions domain model
             var regionDomain = mapper.Map<Regions>(AddRegion);
 
@@ -76,6 +82,11 @@ namespace api_project.api.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegion)
         {
+            // Validate the incoming request
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             // Mapping the UpdateRegionRequestDto to the Regions domain model
             var regionDomainModel = mapper.Map<Regions>(updateRegion);
 

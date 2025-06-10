@@ -23,6 +23,11 @@ namespace api_project.api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
+            // Validate the incoming request
+            if (addWalksRequestDto == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var walk = mapper.Map<Walk>(addWalksRequestDto);
 
             await walkRepository.CreateAsync(walk);
@@ -59,6 +64,11 @@ namespace api_project.api.Controllers
         [Route("{id:guid}")]
         public async Task<IActionResult> UpdateAsync(Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
+            // Validate the incoming request
+            if (updateWalkRequestDto == null || !ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var walk = mapper.Map<Walk>(updateWalkRequestDto);
             walk.Id = id;
             var updatedWalk = await walkRepository.UpdateAsync(walk);
