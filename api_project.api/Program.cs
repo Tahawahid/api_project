@@ -18,6 +18,8 @@ builder.Services.AddDbContext<ApiProjectDBContext>(options =>
 
 // Register the repository interface and its implementation
 builder.Services.AddScoped<IRegionRepositories, SQLRegionRepository>();
+// Register the Walk repository interface and its implementation
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 
 // Register AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperClass));

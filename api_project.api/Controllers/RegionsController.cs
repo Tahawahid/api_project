@@ -49,9 +49,10 @@ namespace api_project.api.Controllers
             }
 
             // Map the domain model to DTO using AutoMapper
-            var regionsDto = mapper.Map<List<Regions>>(regionDomain);
+            var regionDto = mapper.Map<RegionDto>(regionDomain);
 
-            return Ok(regionsDto);
+
+            return Ok(regionDto);
         }
 
         /* Add Region */
